@@ -207,6 +207,10 @@ PRODUCT_ARTIFACT_PATH_REQUIREMENT_ALLOWED_LIST += \
 endif
 endif
 
+# Lineage-specific file
+PRODUCT_COPY_FILES += \
+    vendor/afterlife/config/permissions/privapp-permissions-lineagehw.xml:$(TARGET_COPY_OUT_SYSTEM_EXT)/etc/permissions/privapp-permissions-lineagehw.xml
+
 # Skip boot JAR checks.
 SKIP_BOOT_JARS_CHECK := true
 
