@@ -161,6 +161,10 @@ ifeq ($(TARGET_BUILD_DEVICE_AS_WEBCAM), true)
         ro.usb.uvc.enabled=true
 endif
 
+# Default wifi country code
+PRODUCT_SYSTEM_PROPERTIES += \
+    ro.boot.wificountrycode?=00
+
 # FRP
 PRODUCT_COPY_FILES += \
     vendor/afterlife/prebuilt/common/bin/wipe-frp.sh:$(TARGET_COPY_OUT_RECOVERY)/root/system/bin/wipe-frp
