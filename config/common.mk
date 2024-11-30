@@ -128,6 +128,13 @@ PRODUCT_ARTIFACT_PATH_REQUIREMENT_ALLOWED_LIST += \
     system/%/libfuse-lite.so \
     system/%/libntfs-3g.so
 
+# Disable async MTE on a few processes
+PRODUCT_SYSTEM_EXT_PROPERTIES += \
+    persist.arm64.memtag.app.com.android.se=off \
+    persist.arm64.memtag.app.com.google.android.bluetooth=off \
+    persist.arm64.memtag.app.com.android.nfc=off \
+    persist.arm64.memtag.process.system_server=off
+
 # Disable RescueParty due to high risk of data loss
 PRODUCT_PRODUCT_PROPERTIES += \
     persist.sys.disable_rescue=true
