@@ -38,8 +38,17 @@ endif
 ifneq ($(TARGET_CAMERA_SERVICE_EXT_LIB),)
     $(call soong_config_set,libcameraservice,ext_lib,$(TARGET_CAMERA_SERVICE_EXT_LIB))
 endif
+
 ifneq ($(TARGET_USES_MIUI_CAMERA),)
     $(call soong_config_set,camera,uses_miui_camera,$(TARGET_USES_MIUI_CAMERA))
+endif
+
+ifneq ($(TARGET_CAMERA_NEEDS_CLIENT_INFO_LIB),)
+    $(error TARGET_CAMERA_NEEDS_CLIENT_INFO_LIB is deprecated, please migrate to soong_config_set,camera,needs_client_info_lib)
+endif
+
+ifneq ($(TARGET_CAMERA_NEEDS_CLIENT_INFO_LIB_OPLUS),)
+    $(error TARGET_CAMERA_NEEDS_CLIENT_INFO_LIB_OPLUS is deprecated, please migrate to soong_config_set,camera,needs_client_info_lib_oplus)
 endif
 
 # Libui
