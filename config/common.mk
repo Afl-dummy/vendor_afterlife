@@ -6,6 +6,12 @@ $(call inherit-product-if-exists, vendor/extra/product.mk)
 
 PRODUCT_BRAND ?= AfterlifeOS
 
+# APEX
+DISABLE_DEXPREOPT_CHECK := true
+
+PRODUCT_PACKAGES += \
+    com.google.android.permission
+
 # Bootanimation
 $(call inherit-product, vendor/afterlife/config/bootanimation.mk)
 
