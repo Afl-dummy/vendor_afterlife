@@ -509,4 +509,9 @@
          double tap gestures in non-action areas in the lock screen and launcher workspace to go to
          sleep. -->
     <bool name="config_supportDoubleTapSleep">true</bool>
+
+    <!-- Control whether bright color reduction is available. This should only be enabled on devices
+         that have a HWC implementation that can apply the matrix passed to setColorTransform
+         without impacting power, performance, and app compatibility (e.g. protected content). -->
+    <bool name="config_reduceBrightColorsAvailable">true</bool>
 </resources>
