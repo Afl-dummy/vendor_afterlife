@@ -4,7 +4,10 @@ $(call inherit-product-if-exists, vendor/extra/product.mk)
 # Allow vendor prebuilt repos to exclude themselves from bp scanning
 -include $(sort $(wildcard vendor/*/*/exclude-bp.mk))
 
-PRODUCT_BRAND ?= LineageOS
+PRODUCT_BRAND ?= AfterlifeOS
+
+# Bootanimation
+$(call inherit-product, vendor/afterlife/config/bootanimation.mk)
 
 ifeq ($(PRODUCT_GMS_CLIENTID_BASE),)
 PRODUCT_SYSTEM_DEFAULT_PROPERTIES += \
@@ -12,16 +15,6 @@ PRODUCT_SYSTEM_DEFAULT_PROPERTIES += \
 else
 PRODUCT_SYSTEM_DEFAULT_PROPERTIES += \
     ro.com.google.clientidbase=$(PRODUCT_GMS_CLIENTID_BASE)
-endif
-
-ifeq ($(PRODUCT_IS_ATV),true)
-ifeq ($(PRODUCT_ATV_CLIENTID_BASE),)
-PRODUCT_SYSTEM_DEFAULT_PROPERTIES += \
-    ro.oem.key1=ATV00100020
-else
-PRODUCT_SYSTEM_DEFAULT_PROPERTIES += \
-    ro.oem.key1=$(PRODUCT_ATV_CLIENTID_BASE)
-endif
 endif
 
 ifeq ($(TARGET_BUILD_VARIANT),eng)
@@ -45,18 +38,18 @@ endif
 
 # Backup Tool
 PRODUCT_COPY_FILES += \
-    vendor/lineage/prebuilt/common/bin/backuptool.sh:install/bin/backuptool.sh \
-    vendor/lineage/prebuilt/common/bin/backuptool.functions:install/bin/backuptool.functions \
-    vendor/lineage/prebuilt/common/bin/50-lineage.sh:$(TARGET_COPY_OUT_SYSTEM)/addon.d/50-lineage.sh
+    vendor/afterlife/prebuilt/common/bin/backuptool.sh:install/bin/backuptool.sh \
+    vendor/afterlife/prebuilt/common/bin/backuptool.functions:install/bin/backuptool.functions \
+    vendor/afterlife/prebuilt/common/bin/50-afterlife.sh:$(TARGET_COPY_OUT_SYSTEM)/addon.d/50-afterlife.sh
 
 PRODUCT_ARTIFACT_PATH_REQUIREMENT_ALLOWED_LIST += \
-    system/addon.d/50-lineage.sh
+    system/addon.d/50-afterlife.sh
 
 ifneq ($(strip $(AB_OTA_PARTITIONS) $(AB_OTA_POSTINSTALL_CONFIG)),)
 PRODUCT_COPY_FILES += \
-    vendor/lineage/prebuilt/common/bin/backuptool_ab.sh:$(TARGET_COPY_OUT_SYSTEM)/bin/backuptool_ab.sh \
-    vendor/lineage/prebuilt/common/bin/backuptool_ab.functions:$(TARGET_COPY_OUT_SYSTEM)/bin/backuptool_ab.functions \
-    vendor/lineage/prebuilt/common/bin/backuptool_postinstall.sh:$(TARGET_COPY_OUT_SYSTEM)/bin/backuptool_postinstall.sh
+    vendor/afterlife/prebuilt/common/bin/backuptool_ab.sh:$(TARGET_COPY_OUT_SYSTEM)/bin/backuptool_ab.sh \
+    vendor/afterlife/prebuilt/common/bin/backuptool_ab.functions:$(TARGET_COPY_OUT_SYSTEM)/bin/backuptool_ab.functions \
+    vendor/afterlife/prebuilt/common/bin/backuptool_postinstall.sh:$(TARGET_COPY_OUT_SYSTEM)/bin/backuptool_postinstall.sh
 
 PRODUCT_ARTIFACT_PATH_REQUIREMENT_ALLOWED_LIST += \
     system/bin/backuptool_ab.sh \
@@ -68,14 +61,6 @@ PRODUCT_SYSTEM_DEFAULT_PROPERTIES += \
     ro.ota.allow_downgrade=true
 endif
 endif
-
-# Lineage-specific broadcast actions whitelist
-PRODUCT_COPY_FILES += \
-    vendor/lineage/config/permissions/lineage-sysconfig.xml:$(TARGET_COPY_OUT_PRODUCT)/etc/sysconfig/lineage-sysconfig.xml
-
-# Lineage-specific init rc file
-PRODUCT_COPY_FILES += \
-    vendor/lineage/prebuilt/common/etc/init/init.lineage-system_ext.rc:$(TARGET_COPY_OUT_SYSTEM_EXT)/etc/init/init.lineage-system_ext.rc
 
 # Enable SIP+VoIP on all targets
 PRODUCT_COPY_FILES += \
@@ -89,22 +74,9 @@ PRODUCT_PACKAGES += \
 PRODUCT_COPY_FILES += \
     frameworks/base/data/keyboards/Vendor_045e_Product_028e.kl:$(TARGET_COPY_OUT_PRODUCT)/usr/keylayout/Vendor_045e_Product_0719.kl
 
-# Component overrides
-PRODUCT_PACKAGES += \
-    lineage-component-overrides.xml
-
-# This is Lineage!
-PRODUCT_COPY_FILES += \
-    vendor/lineage/config/permissions/org.lineageos.android.xml:$(TARGET_COPY_OUT_PRODUCT)/etc/permissions/org.lineageos.android.xml
-
 # Enforce privapp-permissions whitelist
 PRODUCT_SYSTEM_DEFAULT_PROPERTIES += \
     ro.control_privapp_permissions=enforce
-
-ifneq ($(TARGET_DISABLE_LINEAGE_SDK), true)
-# Lineage SDK
-include vendor/lineage/config/lineage_sdk_common.mk
-endif
 
 # Do not include art debug targets
 PRODUCT_ART_TARGET_INCLUDE_DEBUG_BUILD := false
@@ -122,48 +94,11 @@ SYSTEMUI_OPTIMIZE_JAVA ?= true
 # Disable vendor restrictions
 PRODUCT_RESTRICT_VENDOR_FILES := false
 
-ifneq ($(TARGET_DISABLE_EPPE),true)
-# Require all requested packages to exist
-$(call enforce-product-packages-exist-internal,$(lastword $(_include_stack)),product_manifest.xml rild Calendar android.hidl.memory@1.0-impl.vendor vndk_apex_snapshot_package)
-endif
-
-# Bootanimation
-TARGET_SCREEN_WIDTH ?= 1080
-TARGET_SCREEN_HEIGHT ?= 1920
-PRODUCT_PACKAGES += \
-    bootanimation.zip \
-    bootanimation-dark.zip
-
-# Lineage interfaces
-PRODUCT_PACKAGES += \
-    framework_compatibility_matrix.lineage.xml
-
-# Lineage packages
-ifeq ($(PRODUCT_IS_ATV),)
-PRODUCT_PACKAGES += \
-    ExactCalculator \
-    Jelly
-endif
-
-ifeq ($(PRODUCT_IS_AUTOMOTIVE),)
-PRODUCT_PACKAGES += \
-    LineageParts \
-    LineageSetupWizard
-endif
-
-PRODUCT_PACKAGES += \
-    LineageSettingsProvider \
-    Updater
-
-PRODUCT_COPY_FILES += \
-    vendor/lineage/prebuilt/common/etc/init/init.lineage-updater.rc:$(TARGET_COPY_OUT_SYSTEM_EXT)/etc/init/init.lineage-updater.rc
-
 # Config
 PRODUCT_PACKAGES += \
-    SimpleDeviceConfig \
     SimpleSettingsConfig
 
-# Extra tools in Lineage
+# Extra tools in Afterlife
 PRODUCT_PACKAGES += \
     bash \
     curl \
@@ -197,7 +132,15 @@ PRODUCT_ARTIFACT_PATH_REQUIREMENT_ALLOWED_LIST += \
 
 # FRP
 PRODUCT_COPY_FILES += \
-    vendor/lineage/prebuilt/common/bin/wipe-frp.sh:$(TARGET_COPY_OUT_RECOVERY)/root/system/bin/wipe-frp
+    vendor/afterlife/prebuilt/common/bin/wipe-frp.sh:$(TARGET_COPY_OUT_RECOVERY)/root/system/bin/wipe-frp
+
+# Lineage Health
+PRODUCT_COPY_FILES += \
+    vendor/afterlife/config/permissions/org.lineageos.health.xml:$(TARGET_COPY_OUT_PRODUCT)/etc/permissions/org.lineageos.health.xml
+
+# Lineage Live Display
+PRODUCT_COPY_FILES += \
+    vendor/afterlife/config/permissions/org.lineageos.livedisplay.xml:$(TARGET_COPY_OUT_PRODUCT)/etc/permissions/org.lineageos.livedisplay.xml
 
 # Openssh
 PRODUCT_PACKAGES += \
@@ -209,8 +152,10 @@ PRODUCT_PACKAGES += \
     ssh-keygen \
     start-ssh
 
-PRODUCT_COPY_FILES += \
-    vendor/lineage/prebuilt/common/etc/init/init.openssh.rc:$(TARGET_COPY_OUT_PRODUCT)/etc/init/init.openssh.rc
+# Packages
+PRODUCT_PACKAGES += \
+    Launcher3QuickStep \
+    ThemePicker
 
 # rsync
 PRODUCT_PACKAGES += \
@@ -244,7 +189,6 @@ endif
 
 # SystemUI
 PRODUCT_DEXPREOPT_SPEED_APPS += \
-    CarSystemUI \
     SystemUI
 
 PRODUCT_SYSTEM_DEFAULT_PROPERTIES += \
@@ -255,18 +199,8 @@ PRODUCT_SYSTEM_DEFAULT_PROPERTIES += \
     debug.sf.enable_transaction_tracing=false
 endif
 
-# Audio files
-$(call inherit-product, vendor/lineage/audio/audio.mk)
-
-# SetupWizard
-PRODUCT_PRODUCT_PROPERTIES += \
-    setupwizard.theme=glif_v4 \
-    setupwizard.feature.day_night_mode_enabled=true
-
-PRODUCT_ENFORCE_RRO_EXCLUDED_OVERLAYS += vendor/lineage/overlay/no-rro
 PRODUCT_PACKAGE_OVERLAYS += \
-    vendor/lineage/overlay/common \
-    vendor/lineage/overlay/no-rro
+    vendor/afterlife/overlay/common
 
 PRODUCT_PACKAGES += \
     DocumentsUIOverlay \
@@ -280,15 +214,9 @@ CUSTOM_LOCALES += \
     cy_GB \
     fur_IT
 
-PRODUCT_ENFORCE_RRO_EXCLUDED_OVERLAYS += vendor/crowdin/overlay
-PRODUCT_PACKAGE_OVERLAYS += vendor/crowdin/overlay
+include vendor/afterlife/config/version.mk
 
-PRODUCT_EXTRA_RECOVERY_KEYS += \
-    vendor/lineage/build/target/product/security/lineage
-
-include vendor/lineage/config/version.mk
-
--include vendor/lineage-priv/keys/keys.mk
+-include vendor/afterlife-priv/keys/keys.mk
 
 -include $(WORKSPACE)/build_env/image-auto-bits.mk
--include vendor/lineage/config/partner_gms.mk
+-include vendor/afterlife/config/partner_gms.mk
