@@ -248,7 +248,8 @@ PRODUCT_PACKAGES += \
 # Packages
 PRODUCT_PACKAGES += \
     Launcher3QuickStep \
-    ThemePicker
+    ThemePicker \
+    GameSpace
 
 # rsync
 PRODUCT_PACKAGES += \
