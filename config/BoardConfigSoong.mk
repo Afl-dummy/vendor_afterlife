@@ -40,7 +40,7 @@ ifneq ($(TARGET_CAMERA_SERVICE_EXT_LIB),)
 endif
 
 ifneq ($(TARGET_USES_MIUI_CAMERA),)
-    $(call soong_config_set,camera,uses_miui_camera,$(TARGET_USES_MIUI_CAMERA))
+    $(call soong_config_set_bool,camera,uses_miui_camera,$(TARGET_USES_MIUI_CAMERA))
 endif
 
 ifneq ($(TARGET_CAMERA_NEEDS_CLIENT_INFO_LIB),)
